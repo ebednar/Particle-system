@@ -19,6 +19,7 @@ public:
 	void rotate(float x, float y, float z);
 	void rotate_to(float x, float y, float z);
 	void scale(float x, float y, float z);
+	virtual void	update();
 private:
 };
 

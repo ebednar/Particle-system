@@ -2,6 +2,7 @@
 #define GL_SILENCE_DEPRECATION
 #include <OpenGL/gl3.h>
 #include <iostream>
+#include "glm/glm.hpp"
 
 Engine::~Engine()
 {
@@ -38,9 +39,25 @@ void Engine::init_engine(int width, int height)
 	glfwSetWindowUserPointer(window, &controls);
 	glViewport(0, 0, width, height);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	controls.yaw = cam.yaw;
 	controls.pitch = cam.pitch;
+
+	texter.init();
+	texter.set_shader("res/shaders/ui_text_vertex.glsl", "res/shaders/ui_text_fragment.glsl");
+	rend.init();
+	texter.vertex_buffer();
+	std::vector<std::string> faces;
+	faces.push_back("res/cubemaps/right.jpg");
+	faces.push_back("res/cubemaps/left.jpg");
+	faces.push_back("res/cubemaps/top.jpg");
+	faces.push_back("res/cubemaps/bottom.jpg");
+	faces.push_back("res/cubemaps/front.jpg");
+	faces.push_back("res/cubemaps/back.jpg");
+	skybox.init(faces);
+	skybox.set_shader("res/shaders/skybox_vert.glsl", "res/shaders/skybox_frag.glsl");
 }
 
 void Engine::run_engine()
@@ -62,10 +79,28 @@ void Engine::run_engine()
 		}
 		old_time = glfwGetTime();
 
-		rend.draw_scene(scene, light_pos, &cam, free_cam);
+		// cam.speed = 8.0f * delta_time;
+		// if (controls.keys[GLFW_KEY_W])
+		// 	cam.pos += cam.speed * cam.front;
+		// if (controls.keys[GLFW_KEY_S])
+		// 	cam.pos -= cam.speed * cam.front;
+		// if (controls.keys[GLFW_KEY_A])
+		// 	cam.pos -= cam.speed * glm::normalize(glm::cross(cam.front, cam.up));
+		// if (controls.keys[GLFW_KEY_D])
+		// 	cam.pos += cam.speed * glm::normalize(glm::cross(cam.front, cam.up));
+		// cam.yaw = controls.yaw;
+		// cam.pitch = controls.pitch;
+
+		cam.update_free();
+		//rend.draw_skybox(&skybox, &cam);
+		rend.draw_scene(&scene, &cam);
+		//rend.draw_pbr(&scene, &cam);
+		//rend.draw_ui(&texter, text);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+		if(close_eng)
+			glfwSetWindowShouldClose(window, GLFW_TRUE);
 	}
 	glfwTerminate();
 }
@@ -77,7 +112,7 @@ void Engine::add_model(Model *mod)
 
 void Engine::add_entity(Entity *ent)
 {
-	scene.push_back(ent);
+	scene.add_entity(ent);
 }
 
 void Engine::set_player(Entity *ent)
@@ -86,17 +121,18 @@ void Engine::set_player(Entity *ent)
 	rend.player = ent;
 }
 
-void Engine::add_light_source(Entity* ent)
+void Engine::add_light_source(glm::vec3 l_pos, glm::vec3 color)
 {
-	light_sources.push_back(ent);
+	scene.add_light_source(l_pos, color);
 }
 
-void Engine::set_lights_pos()
+void	 Engine::add_text_ui(std::string str, float x, float y, float scale)
 {
-	int length = light_sources.size();
-	light_pos = (glm::vec3 **)malloc(length * sizeof(glm::vec3));
-	for(int i = 0; i < length; ++i)
-	{
-		light_pos[i] = &light_sources[i]->position;
-	}
+	text_t *txt = new text_t(str, x, y, scale);
+	text.push_back(txt);
+}
+
+void	 Engine::change_text(std::string str, int id)
+{
+	text[id]->str = str;
 }

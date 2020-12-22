@@ -11,6 +11,11 @@ Entity::Entity()
 
 }
 
+void	Entity::update()
+{
+
+}
+
 void Entity::set_model(Model *model)
 {
 	mod = model;
