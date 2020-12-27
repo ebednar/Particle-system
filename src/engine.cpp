@@ -63,7 +63,7 @@ void Engine::run_engine()
 	while (!glfwWindowShouldClose(window))
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(0.3f, 0.4f, 0.9f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 		delta_time = glfwGetTime() - old_time;
 		timer += delta_time;
@@ -91,6 +91,7 @@ void Engine::run_engine()
 		cam.update_free();
 		//rend.draw_skybox(&skybox, &cam);
 		rend.draw_scene(&scene, &cam);
+		rend.draw_particles(&part);
 		//rend.draw_pbr(&scene, &cam);
 		//rend.draw_ui(&texter, text);
 

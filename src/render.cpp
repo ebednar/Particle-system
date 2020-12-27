@@ -123,3 +123,10 @@ void	Render::draw_skybox(Skybox *skybox, Camera* cam)
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDepthMask(GL_TRUE);
 }
+
+void	Render::draw_particles(Particles *particles)
+{
+	glUseProgram(particles->shader_id);
+	glBindVertexArray(particles->vao);
+	glDrawArrays(GL_POINTS, 0, 6);
+}

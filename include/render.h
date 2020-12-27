@@ -6,6 +6,7 @@
 #include "scene.h"
 #include "camera.h"
 #include "skybox.h"
+#include "particles.h"
 
 struct vec3
 {
@@ -24,6 +25,7 @@ public:
 	void	draw_scene(Scene* scene, Camera* cam);
 	void	draw_pbr(Scene *scene, Camera *cam);
 	void	draw_skybox(Skybox *skybox, Camera* cam);
+	void	draw_particles(Particles *particles);
 
 private:
 	glm::mat4	projection;

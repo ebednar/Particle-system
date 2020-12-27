@@ -5,8 +5,6 @@
 #include <GLFW/glfw3.h>
 #include "render.h"
 #include "events.h"
-#include "particles.h"
-#include "skybox.h"
 #include "scene.h"
 
 struct state;

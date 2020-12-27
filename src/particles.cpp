@@ -1,10 +1,10 @@
 #include "particles.h"
 #include <stdio.h>
-#include <OpenCL/opencl.h>
-#include <OpenCL/cl_gl.h>
 #define GL_SILENCE_DEPRECATION
 #include <OpenGL/gl3.h>
+#define GL_SILENCE_DEPRECATION
 #include <OpenGL/OpenGL.h>
+#include "shader.h"
 
 void Particles::alloc_mem()
 {
@@ -12,9 +12,10 @@ void Particles::alloc_mem()
 	glGenBuffers(1, &vbo);
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, 64 * sizeof(float), NULL, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, 1 * sizeof(float), (void*)0);
+	glBufferData(GL_ARRAY_BUFFER, 3 * 6 * sizeof(float), NULL, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+	create_shader(&shader_id, "res/shaders/part_vert.glsl", "res/shaders/part_frag.glsl");
 }
 
 void Particles::init_cl()
@@ -23,7 +24,7 @@ void Particles::init_cl()
     char *source_str;
     size_t source_size;
  
-    fp = fopen("res/kernel/test.cl", "r");
+    fp = fopen("res/kernel/init.cl", "r");
     if (!fp) {
         fprintf(stderr, "Failed to load kernel.\n");
         exit(1);
@@ -68,7 +69,7 @@ void Particles::init_cl()
  	// Create memory buffers on the device for each vector 
 	//  cl_mem part_mem_obj = clCreateBuffer(context, CL_MEM_WRITE_ONLY, 
     //         64 * sizeof(int), NULL, &ret);
-	cl_mem part_mem_obj = clCreateFromGLBuffer(context, CL_MEM_READ_WRITE, vbo, &ret);
+	part_mem_obj = clCreateFromGLBuffer(context, CL_MEM_READ_WRITE, vbo, &ret);
 	if (ret != CL_SUCCESS)
 		printf("buffer error\n");
 	printf("opencl mem buffers\n");
@@ -92,19 +93,17 @@ void Particles::init_cl()
     // ret = clSetKernelArg(kernel, 1, sizeof(cl_mem), (void *)&b_mem_obj);
     ret = clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&part_mem_obj);
 	// Execute the OpenCL kernel on the list
-    size_t global_item_size = 64; // Process the entire lists
-    size_t local_item_size = 64; // Divide work items into groups of 64
+    size_t global_item_size = 2; // Process the entire lists
+    size_t local_item_size = 1; // Divide work items into groups of 64
     ret = clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, 
-            &global_item_size, &local_item_size, 0, NULL, NULL);
-	ret = clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, 
             &global_item_size, &local_item_size, 0, NULL, NULL);
 	printf("exec kernel\n");
 	// Read the memory buffer C on the device to the local variable C
-   int *c = (int*)malloc(sizeof(int)*64);
-    ret = clEnqueueReadBuffer(command_queue, part_mem_obj, CL_TRUE, 0, 
-            64 * sizeof(int), c, 0, NULL, NULL);
-	for (int i = 0; i < 64; ++i)
-		printf("%d ", c[i]);
+	float *c = (float *)malloc(sizeof(float) * 18);
+	ret = clEnqueueReadBuffer(command_queue, part_mem_obj, CL_TRUE, 0, 
+		18 * sizeof(float), c, 0, NULL, NULL);
+	for (int i = 0; i < 18; ++i)
+		printf("%f ", c[i]);
 	printf("\nread result\n");
 	
 	// Clean up
