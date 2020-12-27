@@ -1,5 +1,6 @@
 #include "skybox.h"
-#include "glad.h"
+#define GL_SILENCE_DEPRECATION
+#include <OpenGL/gl3.h>
 #include "stb_image.h"
 #include "shader.h"
 #include <iostream>

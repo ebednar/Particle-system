@@ -18,7 +18,9 @@ SRC =	./src/main.cpp \
 		./src/events.cpp \
 		./src/model.cpp \
 		./src/entity.cpp \
+		./src/scene.cpp \
 		./src/camera.cpp \
+		./src/skybox.cpp \
 		./src/particles.cpp
 OBJECTS = $(SRC:.cpp=.o)
 FLAGS = -std=c++11

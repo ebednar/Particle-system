@@ -12,9 +12,9 @@ Engine::~Engine()
 		delete models[i]->vertices;
 		delete models[i];
 	}
-	length = scene.size();
+	length = scene.ents.size();
 	for (int i = 0; i < length; ++i)
-		delete scene[i];
+		delete scene.ents[i];
 	std::cout << "Engine off" << std::endl;
 }
 
@@ -45,10 +45,7 @@ void Engine::init_engine(int width, int height)
 	controls.yaw = cam.yaw;
 	controls.pitch = cam.pitch;
 
-	texter.init();
-	texter.set_shader("res/shaders/ui_text_vertex.glsl", "res/shaders/ui_text_fragment.glsl");
 	rend.init();
-	texter.vertex_buffer();
 	std::vector<std::string> faces;
 	faces.push_back("res/cubemaps/right.jpg");
 	faces.push_back("res/cubemaps/left.jpg");
@@ -124,15 +121,4 @@ void Engine::set_player(Entity *ent)
 void Engine::add_light_source(glm::vec3 l_pos, glm::vec3 color)
 {
 	scene.add_light_source(l_pos, color);
-}
-
-void	 Engine::add_text_ui(std::string str, float x, float y, float scale)
-{
-	text_t *txt = new text_t(str, x, y, scale);
-	text.push_back(txt);
-}
-
-void	 Engine::change_text(std::string str, int id)
-{
-	text[id]->str = str;
 }

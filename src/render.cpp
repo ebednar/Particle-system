@@ -109,50 +109,6 @@ void Render::draw_pbr(Scene* scene, Camera* cam)
 	}
 }
 
-void Render::draw_ui(ui_text* texter, std::vector<text_t *> text)
-{
-	glUseProgram(texter->shader_id);
-	unsigned int proj_loc = glGetUniformLocation(texter->shader_id, "u_P");
-	glUniformMatrix4fv(proj_loc, 1, GL_FALSE, glm::value_ptr(ortProjection));
-	glUniform3f(glGetUniformLocation(texter->shader_id, "textColor"), 0.5f, 0.0f, 0.0f);
-	glActiveTexture(GL_TEXTURE0);
-	glBindVertexArray(texter->vao);
-	int length = text.size();
-	for (int i = 0; i < length; ++i)
-	{
-		text_t* txt = text[i];
-		int x = txt->x;
-		std::string::const_iterator c;
-		for (c = txt->str.begin(); c != txt->str.end(); ++c)
-		{
-			character ch = texter->characters[*c];
-			float xpos = x + ch.bearing.x * txt->scale;
-			float ypos = txt->y - (ch.size.y - ch.bearing.y) * txt->scale;
-
-			float w = ch.size.x * txt->scale;
-			float h = ch.size.y * txt->scale;
-
-			float vertices[6][4] = {
-				{ xpos,     ypos + h,   0.0f, 0.0f },
-				{ xpos,     ypos,       0.0f, 1.0f },
-				{ xpos + w, ypos,       1.0f, 1.0f },
-
-				{ xpos,     ypos + h,   0.0f, 0.0f },
-				{ xpos + w, ypos,       1.0f, 1.0f },
-				{ xpos + w, ypos + h,   1.0f, 0.0f }
-			};
-			glBindTexture(GL_TEXTURE_2D, ch.textureID);
-			glBindBuffer(GL_ARRAY_BUFFER, texter->vbo);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			glDrawArrays(GL_TRIANGLES, 0, 6);
-			x += (ch.advance >> 6) * txt->scale;
-		}
-	}
-	glBindVertexArray(0);
-	glBindTexture(GL_TEXTURE_2D, 0);
-}
-
 void	Render::draw_skybox(Skybox *skybox, Camera* cam)
 {
 	glDepthMask(GL_FALSE);
