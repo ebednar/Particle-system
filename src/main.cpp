@@ -8,8 +8,6 @@ int		main(void)
 	
 	srand(time(NULL));
 	engine.init_engine(640, 480);
-	engine.part.alloc_mem();
-	engine.part.init_cl();
 	engine.run_engine();
 	return 0;
 }

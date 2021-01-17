@@ -23,7 +23,6 @@ public:
 	void	init();
 	void	set_lights_pos(glm::vec3 **lights, int numb);
 	void	draw_scene(Scene* scene, Camera* cam);
-	void	draw_pbr(Scene *scene, Camera *cam);
 	void	draw_skybox(Skybox *skybox, Camera* cam);
 	void	draw_particles(Particles *particles);
 
