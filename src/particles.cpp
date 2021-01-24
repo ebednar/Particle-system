@@ -31,10 +31,10 @@ void Particles::alloc_mem()
 	glGenBuffers(1, &vbo);
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, (3 + 3 + 1) * number * sizeof(float), NULL, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void *)0);
+	glBufferData(GL_ARRAY_BUFFER, (3 + 3 + 2) * number * sizeof(float), NULL, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void *)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 	create_shader(&shader_id, "res/shaders/part_vert.glsl", "res/shaders/part_frag.glsl");
 }
@@ -109,9 +109,15 @@ void	Particles::init_cl()
     init_kernel = clCreateKernel(init_program, "init_parts", &ret);
 	update_kernel = clCreateKernel(update_program, "update_parts", &ret);
 	// Set the arguments of the kernel
+	int r = rand() % 100;
+	cl_float seed = r / 100.0f;
+	printf("seed %f\n", seed);
+	cl_float fnumber = (cl_float)number;
     ret = clSetKernelArg(init_kernel, 0, sizeof(cl_mem), (void *)&part_mem_obj);
-	ret = clSetKernelArg(update_kernel, 0, sizeof(cl_mem), (void *)&part_mem_obj);
-	ret = clSetKernelArg(update_kernel, 1, sizeof(cl_float), &grav_point);
+	ret = clSetKernelArg(init_kernel, 1, sizeof(cl_float), &fnumber);
+	ret = clSetKernelArg(init_kernel, 2, sizeof(cl_float), &seed);
+	ret = clSetKernelArg(update_kernel, 0, sizeof(cl_mem), (void *)&part_mem_obj);	
+	ret = clSetKernelArg(update_kernel, 1, sizeof(grav_point), &g_point);
 
 	// Execute the OpenCL kernel on the list
     global_item_size = number; // Process the entire lists
@@ -122,11 +128,11 @@ void	Particles::init_cl()
 	// ret = clEnqueueNDRangeKernel(command_queue, update_kernel, 1, NULL, 
     //         &global_item_size, &local_item_size, 0, NULL, NULL);
 	// Read the memory buffer on the device to the local variable
-	float *result = (float *)malloc(sizeof(float) * number * 7);
+	float *result = (float *)malloc(sizeof(float) * number * 8);
 	ret = clEnqueueReadBuffer(command_queue, part_mem_obj, CL_TRUE, 0, 
-		number * 7 * sizeof(float), result, 0, NULL, NULL);
+		number * 8 * sizeof(float), result, 0, NULL, NULL);
 	std::cout << "check result" << std::endl;
-	for (int i = 0; i < number * 7; ++i)
+	for (int i = 0; i < number * 8; ++i)
 		std::cout << result[i] << " ";
 	std::cout << "\n";
 

@@ -1,17 +1,17 @@
 #include <OpenCL/opencl.h>
 
-struct Grav_point
+struct grav_point
 {
     cl_float x;
 	cl_float y;
 	cl_float z;
-	Grav_point():x(0.0f), y(0.0f), z(0.0f){};
+	grav_point():x(0.0f), y(0.0f), z(0.0f){};
 };
 
 class Particles
 {
 public:
-	Grav_point			grav_point;
+	grav_point			g_point;
 	size_t				number;
 	size_t				global_item_size;
 	size_t				local_item_size;

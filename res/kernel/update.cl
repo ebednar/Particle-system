@@ -7,6 +7,7 @@ typedef struct s_Particle
 	float g;
 	float b;
 	float velocity;
+	float acceleraion;
 }   Particle;
 
 typedef struct s_Grav_point
@@ -29,9 +30,9 @@ __kernel void update_parts(__global Particle *parts, Grav_point point)
 	float z = point.z - parts[i].z;
 	float dist = sqrt(x * x + y * y + z * z);
 
-    parts[i].x += x * parts[i].velocity / dist;
-	parts[i].y += y * parts[i].velocity / dist;
-	parts[i].z -= z * parts[i].velocity / dist;
+    //parts[i].x += x * parts[i].velocity / dist;
+	//parts[i].y += y * parts[i].velocity / dist;
+	//parts[i].z -= z * parts[i].velocity / dist;
 
 	parts[i].g = 0.6f * (1 - dist);
 }
