@@ -22,5 +22,5 @@ __kernel void init_parts(__global Particle *parts) {
 	parts[i].r = 1.0f;
     parts[i].g = 0.6f * (1 - (parts[i].x * parts[i].x + parts[i].y * parts[i].y));
     parts[i].b = 0.0f;
-	parts[i].velocity = 0.01f;
+	parts[i].velocity = 0.001f;
 }

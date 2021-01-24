@@ -92,6 +92,7 @@ void Engine::run_engine()
 		// cam.pitch = controls.pitch;
 
 		cam.update_free();
+		part.update();
 		//rend.draw_skybox(&skybox, &cam);
 		rend.draw_scene(&scene, &cam);
 		rend.draw_particles(&part);
