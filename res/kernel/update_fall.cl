@@ -34,5 +34,5 @@ __kernel void update_parts(__global Particle *parts, Grav_point point)
 	//parts[i].y += y * parts[i].velocity / sqrt(y * y);
 	//parts[i].z -= z * parts[i].velocity / sqrt(z * z);
 
-	parts[i].g = 1.0f * (1 - dist);
+	parts[i].g = 0.6f * (1 - dist);
 }

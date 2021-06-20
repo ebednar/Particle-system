@@ -130,8 +130,12 @@ void	Particles::init_cl()
 	ret = clEnqueueReadBuffer(command_queue, part_mem_obj, CL_TRUE, 0, 
 		number * 8 * sizeof(float), result, 0, NULL, NULL);
 	std::cout << "check result" << std::endl;
-	for (int i = 0; i < number * 8; ++i)
+	for (int i = 0; i < number * 8; i += 8)
+	{
 		std::cout << result[i] << " ";
+		std::cout << result[i + 1] << " ";
+		std::cout << result[i + 2] << std::endl;
+	}
 	std::cout << "\n";
 
     free(result);
