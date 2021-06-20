@@ -1,3 +1,4 @@
+#define GL_SILENCE_DEPRECATION
 #include <OpenCL/opencl.h>
 
 struct grav_point

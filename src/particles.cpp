@@ -1,8 +1,6 @@
 #include "particles.h"
 #include <iostream>
-#define GL_SILENCE_DEPRECATION
 #include <OpenGL/gl3.h>
-#define GL_SILENCE_DEPRECATION
 #include <OpenGL/OpenGL.h>
 #include "shader.h"
 

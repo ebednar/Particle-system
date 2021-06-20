@@ -1,6 +1,7 @@
 #ifndef RENDER_H
 # define RENDER_H
 
+#define GL_SILENCE_DEPRECATION
 #include "entity.h"
 #include <vector>
 #include "scene.h"
